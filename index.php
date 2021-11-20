@@ -8,5 +8,5 @@ Author: آلماتک
 Author URI: http://almaatech.ir
 */
 
-require 'includes/toman-currency.php';
+require 'includes/currency-helper.php';
 require 'includes/gateways.php';

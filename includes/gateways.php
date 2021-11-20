@@ -6,16 +6,12 @@ if (!class_exists('EDD_sadad_Gateway')):
 
     class EDD_sadad_Gateway
     {
-        public $keyname;
-
         public function __construct()
         {
-            $this->keyname = 'sadad';
-
             add_filter('edd_payment_gateways', array($this, 'add'));
-            add_action($this->format('edd_{key}_cc_form'), array($this, 'cc_form'));
-            add_action($this->format('edd_gateway_{key}'), array($this, 'process'));
-            add_action($this->format('edd_verify_{key}'), array($this, 'verify'));
+            add_action('edd_sadad_cc_form', array($this, 'cc_form'));
+            add_action('edd_gateway_sadad', array($this, 'process'));
+            add_action('edd_verify_sadad', array($this, 'verify'));
             add_filter('edd_settings_gateways', array($this, 'settings'));
             add_action('init', array($this, 'listen'));
         }
@@ -23,7 +19,7 @@ if (!class_exists('EDD_sadad_Gateway')):
         public function add($gateways)
         {
             global $edd_options;
-            $gateways[$this->keyname] = array(
+            $gateways['sadad'] = array(
                 'checkout_label' => isset($edd_options['sadad_label']) ? $edd_options['sadad_label'] : 'درگاه سداد بانک ملی',
                 'admin_label' => 'سداد'
             );
@@ -42,10 +38,10 @@ if (!class_exists('EDD_sadad_Gateway')):
 
             if ($payment) {
 
-                $terminal_id = (isset($edd_options[$this->keyname . '_terminal_id']) ? $edd_options[$this->keyname . '_terminal_id'] : '');
-                $merchant_id = (isset($edd_options[$this->keyname . '_merchant_id']) ? $edd_options[$this->keyname . '_merchant_id'] : '');
-                $terminal_key = (isset($edd_options[$this->keyname . '_terminal_key']) ? $edd_options[$this->keyname . '_terminal_key'] : '');
-                $callback = add_query_arg('verify_' . $this->keyname, '1', get_permalink($edd_options['success_page']));
+                $terminal_id = (isset($edd_options['sadad_terminal_id']) ? $edd_options['sadad_terminal_id'] : '');
+                $merchant_id = (isset($edd_options['sadad_merchant_id']) ? $edd_options['sadad_merchant_id'] : '');
+                $terminal_key = (isset($edd_options['sadad_terminal_key']) ? $edd_options['sadad_terminal_key'] : '');
+                $callback = add_query_arg('verify_sadad', '1', get_permalink($edd_options['success_page']));
                 $orderId = $payment;
                 $amount = intval($purchase_data['price']);
                 if (edd_get_currency() == 'IRT')
@@ -109,7 +105,7 @@ if (!class_exists('EDD_sadad_Gateway')):
             if ($payment->status == 'complete')
                 return false;
 
-            $terminal_key = (isset($edd_options[$this->keyname . '_terminal_key']) ? $edd_options[$this->keyname . '_terminal_key'] : '');
+            $terminal_key = (isset($edd_options['sadad_terminal_key']) ? $edd_options['sadad_terminal_key'] : '');
 
             if (isset($_POST['token']) && isset($_POST['OrderId']) && isset($_POST['ResCode'])) {
 
@@ -212,42 +208,37 @@ if (!class_exists('EDD_sadad_Gateway')):
         public function settings($settings)
         {
             return array_merge($settings, array(
-                $this->keyname . '_header' => array(
-                    'id' => $this->keyname . '_header',
+                'sadad_header' => array(
+                    'id' => 'sadad_header',
                     'type' => 'header',
                     'name' => '<strong>تنظیمات درگاه سداد بانک ملی</strong>'
                 ),
-                $this->keyname . '_merchant_id' => array(
-                    'id' => $this->keyname . '_merchant_id',
+                'sadad_merchant_id' => array(
+                    'id' => 'sadad_merchant_id',
                     'name' => 'شماره پذیرنده',
                     'type' => 'text',
                     'size' => 'regular'
                 ),
-                $this->keyname . '_terminal_id' => array(
-                    'id' => $this->keyname . '_terminal_id',
+                'sadad_terminal_id' => array(
+                    'id' => 'sadad_terminal_id',
                     'name' => 'شماره ترمینال',
                     'type' => 'text',
                     'size' => 'regular'
                 ),
-                $this->keyname . '_terminal_key' => array(
-                    'id' => $this->keyname . '_terminal_key',
+                'sadad_terminal_key' => array(
+                    'id' => 'sadad_terminal_key',
                     'name' => 'کلید تراکنش',
                     'type' => 'text',
                     'size' => 'regular'
                 ),
-                $this->keyname . '_label' => array(
-                    'id' => $this->keyname . '_label',
+                'sadad_label' => array(
+                    'id' => 'sadad_label',
                     'name' => 'نام درگاه در صفحه پرداخت',
                     'type' => 'text',
                     'size' => 'regular',
                     'std' => 'درگاه سداد بانک ملی'
                 )
             ));
-        }
-
-        private function format($string)
-        {
-            return str_replace('{key}', $this->keyname, $string);
         }
 
         private function insert_payment($purchase_data)
@@ -272,8 +263,8 @@ if (!class_exists('EDD_sadad_Gateway')):
 
         public function listen()
         {
-            if (isset($_GET['verify_' . $this->keyname]) && $_GET['verify_' . $this->keyname])
-                do_action('edd_verify_' . $this->keyname);
+            if (isset($_GET['verify_sadad']) && $_GET['verify_sadad'])
+                do_action('edd_verify_sadad');
         }
 
         private function sadad_request_err_msg($err_code)

@@ -5,8 +5,7 @@
 ## Changelog:
 
 ### 1.1
-* Fixed a few bugs
-* Compatibility with the latest version of Wordpress and WooCommerce
+* Fix bug.
 
 ## Contributors:
 - [almaatech](https://almaatech.ir/)
