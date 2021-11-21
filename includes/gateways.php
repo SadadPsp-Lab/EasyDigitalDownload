@@ -117,16 +117,6 @@ if (!class_exists('EDD_sadad_Gateway')):
 
                 $result = $this->sadad_call_api('https://sadad.shaparak.ir/VPG/api/v0/Advice/Verify', $parameters);
 
-                edd_empty_cart();
-
-                if (version_compare(EDD_VERSION, '2.1', '>='))
-                    edd_set_payment_transaction_id($payment->ID, $result->SystemTraceNo);
-
-                edd_insert_payment_note($payment->ID, 'شماره تراکنش بانکی: ' . $result->SystemTraceNo);
-                edd_update_payment_meta($payment->ID, 'sadad_ref_num', $result->RetrivalRefNo);
-                edd_update_payment_status($payment->ID, 'publish');
-                edd_send_to_success_page();
-
                 if ($result != false) {
                     if ($result->ResCode == 0) {
                         edd_empty_cart();
