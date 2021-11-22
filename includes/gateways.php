@@ -399,7 +399,7 @@ if (!class_exists('EDD_sadad_Gateway')):
                 default:
                     $message = 'خطای نامشخص';
             }
-            return __($message, 'woocommerce');
+            return $message;
         }
 
         private function sadad_verify_err_msg($res_code)
@@ -415,7 +415,7 @@ if (!class_exists('EDD_sadad_Gateway')):
                     $error_text = 'مهلت ارسال تراکنش به پايان رسیده است.';
                     break;
             }
-            return __($error_text, 'woocommerce');
+            return $error_text;
         }
     }
 
